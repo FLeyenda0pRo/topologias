@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topologías De Red - Cuestionario</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #46178f 0%, #250850 100%);
+            min-height: 100vh;
+        }
+
+        /* Animación de pulso para el botón de inicio */
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.7);
+            }
+        }
+
+        .btn-empezar {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        /* Estilos de botones estilo Kahoot */
+        .kahoot-btn {
+            transition: all 0.15s ease-in-out;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+        }
+
+        .kahoot-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+        }
+
+        /* Colores específicos de las respuestas */
+        .btn-red { background-color: #e21b3c; }
+        .btn-red:hover { background-color: #c01431; }
+
+        .btn-blue { background-color: #1368ce; }
+        .btn-blue:hover { background-color: #0f52a5; }
+
+        .btn-yellow { background-color: #d89e00; }
+        .btn-yellow:hover { background-color: #b58400; }
+
+        .btn-green { background-color: #26890c; }
+        .btn-green:hover { background-color: #1e6c09; }
+
+        /* Pantallas */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="text-white flex items-center justify-center p-4">
+
+    <div class="w-full max-w-3xl min-h-[550px] flex flex-col justify-between">
+
+        <!-- ================= PANTALLA DE INICIO ================= -->
+        <div id="start-screen" class="screen active flex-col items-center justify-center text-center py-8 space-y-12 my-auto">
+            <div class="space-y-4">
+                <span class="inline-block bg-purple-900/60 text-purple-200 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-purple-400/30">
+                    <i class="fa-solid fa-network-wired mr-2"></i> Cuestionario Interactivo
+                </span>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-md leading-tight">
+                    Topologías De Red
+                </h1>
+            </div>
+
+            <button id="start-btn" onclick="startQuiz()" class="btn-empezar bg-white text-purple-900 text-3xl md:text-4xl font-black px-12 py-6 rounded-2xl cursor-pointer hover:bg-yellow-300 transition-colors uppercase tracking-wider flex items-center gap-3">
+                <i class="fa-solid fa-play text-2xl"></i> ¡Empezar!
+            </button>
+        </div>
+
+        <!-- ================= PANTALLA DE CUESTIONARIO ================= -->
+        <div id="quiz-screen" class="screen flex-col justify-between w-full h-full py-4 space-y-6">
+            
+            <!-- Encabezado con estado del juego -->
+            <div class="flex justify-between items-center bg-purple-900/40 backdrop-blur-md p-4 rounded-xl border border-white/10">
+                <div class="text-lg font-semibold">
+                    Pregunta <span id="current-question-num" class="text-yellow-300 font-bold">1</span> de <span id="total-questions-num">32</span>
+                </div>
+                <div class="text-lg font-semibold bg-purple-950/60 px-4 py-1.5 rounded-lg border border-purple-400/20">
+                    Puntos: <span id="score-display" class="text-green-400 font-bold">0</span>
+                </div>
+            </div>
+
+            <!-- Caja central de la Pregunta -->
+            <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-2xl text-center min-h-[180px] flex items-center justify-center border-4 border-purple-300/30">
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold leading-relaxed">
+                    <!-- Texto de la pregunta -->
+                </h2>
+            </div>
+
+            <!-- Cuadrícula 2x2 para las Opciones de Respuesta -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="selectOption(0)" id="btn-0" class="kahoot-btn btn-red text-white p-5 rounded-xl font-bold text-base md:text-lg text-left flex items-center gap-4 transition-all">
+                    <span class="bg-black/20 p-2.5 rounded-lg text-sm flex items-center justify-center w-10 h-10 shrink-0">
+                        <i class="fa-solid fa-triangle text-white"></i>
+                    </span>
+                    <span id="opt-0-text" class="w-full"></span>
+                </button>
+
+                <button onclick="selectOption(1)" id="btn-1" class="kahoot-btn btn-blue text-white p-5 rounded-xl font-bold text-base md:text-lg text-left flex items-center gap-4 transition-all">
+                    <span class="bg-black/20 p-2.5 rounded-lg text-sm flex items-center justify-center w-10 h-10 shrink-0">
+                        <i class="fa-solid fa-diamond text-white"></i>
+                    </span>
+                    <span id="opt-1-text" class="w-full"></span>
+                </button>
+
+                <button onclick="selectOption(2)" id="btn-2" class="kahoot-btn btn-yellow text-white p-5 rounded-xl font-bold text-base md:text-lg text-left flex items-center gap-4 transition-all">
+                    <span class="bg-black/20 p-2.5 rounded-lg text-sm flex items-center justify-center w-10 h-10 shrink-0">
+                        <i class="fa-solid fa-circle text-white"></i>
+                    </span>
+                    <span id="opt-2-text" class="w-full"></span>
+                </button>
+
+                <button onclick="selectOption(3)" id="btn-3" class="kahoot-btn btn-green text-white p-5 rounded-xl font-bold text-base md:text-lg text-left flex items-center gap-4 transition-all">
+                    <span class="bg-black/20 p-2.5 rounded-lg text-sm flex items-center justify-center w-10 h-10 shrink-0">
+                        <i class="fa-solid fa-square text-white"></i>
+                    </span>
+                    <span id="opt-3-text" class="w-full"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PANTALLA DE RESULTADOS ================= -->
+        <div id="result-screen" class="screen flex-col items-center justify-center text-center py-8 space-y-8 my-auto">
+            <div class="bg-purple-900/50 backdrop-blur-md p-8 rounded-3xl border border-white/20 w-full max-w-lg space-y-6">
+                <div class="text-6xl text-yellow-300">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-extrabold">¡Cuestionario Finalizado!</h2>
+                
+                <div class="bg-purple-950/80 p-6 rounded-2xl space-y-3">
+                    <p class="text-gray-300 text-lg">Tu puntuación total es:</p>
+                    <p class="text-5xl font-black text-green-400"><span id="final-score">0</span> pts</p>
+                    <p class="text-sm text-gray-300 pt-2 border-t border-gray-700/50">
+                        Aciertos: <span id="correct-answers-count" class="font-bold text-white">0</span> de <span id="total-questions-count">0</span>
+                    </p>
+                </div>
+
+                <button onclick="restartQuiz()" class="kahoot-btn bg-yellow-400 hover:bg-yellow-300 text-purple-950 font-black text-xl px-8 py-4 rounded-xl w-full uppercase tracking-wider transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Reiniciar Cuestionario
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Lógica de la aplicación en JavaScript -->
+    <script>
+        const questions = [
+            {
+                question: "¿Qué define la topología física de una red?",
+                options: [
+                    "La disposición geométrica de las estaciones de trabajo, los cables y los dispositivos de conexión",
+                    "El sistema operativo de los ordenadores",
+                    "La cantidad de información almacenada en los servidores",
+                    "La velocidad de conexión a Internet"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Cuál es el objetivo principal de la topología de una red?",
+                options: [
+                    "Aumentar exclusivamente la longitud de los cables",
+                    "Determinar la forma más eficiente de dar servicio a los usuarios de la red",
+                    "Eliminar todos los dispositivos de conexión",
+                    "Reducir el número de ordenadores a uno solo"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Qué parámetros se consideran al determinar la topología de una red?",
+                options: [
+                    "El color de los equipos",
+                    "El número de estaciones, la distancia entre nodos y el ancho de banda necesario",
+                    "El tamaño de los monitores",
+                    "La marca de los ordenadores exclusivamente"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Cómo se conectan las estaciones en una topología en estrella?",
+                options: [
+                    "Todas las estaciones se conectan a un dispositivo central llamado switch o conmutador",
+                    "Cada estación se conecta directamente con todos los nodos",
+                    "Todas se conectan a un mismo cable troncal",
+                    "Cada estación se conecta únicamente con dos estaciones adyacentes"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Qué sucede cuando se avería el cable que conecta una estación en estrella?",
+                options: [
+                    "Se desconectan todas las estaciones",
+                    "Toda la red deja de funcionar",
+                    "La red cambia a topología en bus",
+                    "Solamente se desconecta el equipo enlazado por ese cable"
+                ],
+                correct: 3
+            },
+            {
+                question: "¿Por qué es fácil diagnosticar problemas en una topología en estrella?",
+                options: [
+                    "Porque todas las estaciones comparten el mismo cable",
+                    "Porque todos los equipos están conectados directamente entre sí",
+                    "Porque cada estación dispone de un enlace independiente",
+                    "Porque no utiliza cables"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿De qué depende el número máximo de estaciones en una topología en estrella?",
+                options: [
+                    "Del tamaño de las estaciones",
+                    "De la velocidad de los monitores",
+                    "De la capacidad del switch",
+                    "Del número de servidores de Internet"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Qué ventaja ofrece la topología en estrella al ampliar la red?",
+                options: [
+                    "Obliga a reemplazar todos los cables",
+                    "Elimina el dispositivo central",
+                    "Permite aumentar o disminuir las estaciones con facilidad",
+                    "Impide conectar nuevas estaciones"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Qué problema provocaba el uso de un hub como nodo central?",
+                options: [
+                    "Las colisiones en la red",
+                    "La pérdida de jerarquía",
+                    "La imposibilidad de conectar cables",
+                    "La degradación de la señal por distancia"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Qué ocurre si se avería el nodo central de una topología en estrella?",
+                options: [
+                    "La red se transforma en malla",
+                    "La red sigue funcionando sin cambios",
+                    "Todas las estaciones pierden la conexión",
+                    "Solo se desconecta una estación"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Qué topología establece el estándar oficial de cableado estructurado para redes LAN?",
+                options: [
+                    "Bus",
+                    "Anillo",
+                    "Malla",
+                    "Estrella"
+                ],
+                correct: 3
+            },
+            {
+                question: "¿Cómo se conectan las estaciones en una topología en bus?",
+                options: [
+                    "A dos anillos de fibra óptica",
+                    "A un mismo cable llamado bus troncal",
+                    "A todos los nodos mediante enlaces dedicados",
+                    "A un switch principal y switches secundarios"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Mediante qué elemento se conecta cada estación al bus troncal?",
+                options: [
+                    "Un switch secundario",
+                    "Un cable corto o latiguillo",
+                    "Un enlace exclusivo con cada nodo",
+                    "Un anillo secundario"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Qué ocurre con la información transmitida en una topología en bus?",
+                options: [
+                    "Todas las estaciones la reciben, pero solo accede a ella la estación destinataria",
+                    "Solo la recibe la estación de destino",
+                    "Solo circula por dos cables",
+                    "Se envía exclusivamente al nodo central"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Cuál es una ventaja de la topología en bus?",
+                options: [
+                    "El fallo del bus no afecta a las estaciones",
+                    "Su instalación es fácil y barata",
+                    "Su longitud es ilimitada",
+                    "No necesita cables"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Cómo se añade una nueva estación a una topología en bus?",
+                options: [
+                    "Instalando switches secundarios",
+                    "Sustituyendo todos los equipos",
+                    "Añadiendo un anillo secundario",
+                    "Uniéndola al bus"
+                ],
+                correct: 3
+            },
+            {
+                question: "¿Qué sucede si falla el bus troncal?",
+                options: [
+                    "La red continúa por un anillo secundario",
+                    "Todas las estaciones se desconectan y el diagnóstico es difícil",
+                    "Cada estación regenera automáticamente la señal",
+                    "Solo se desconecta la estación más cercana"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Por qué está limitado el número de estaciones en una topología en bus?",
+                options: [
+                    "El bus solo admite conexiones inalámbricas",
+                    "Las estaciones no pueden compartir información",
+                    "La señal se degrada y las estaciones no la regeneran",
+                    "Cada estación necesita dos switches"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Cómo se conecta cada estación en una topología en anillo?",
+                options: [
+                    "A todas las estaciones",
+                    "Solamente a las dos estaciones adyacentes",
+                    "A un switch central",
+                    "A un cable troncal compartido"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Qué caracteriza a un anillo dual?",
+                options: [
+                    "Dos cables: un anillo primario y otro secundario",
+                    "Dos switches sin cables",
+                    "Conexión directa con todos los nodos",
+                    "Uso exclusivo de cobre"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Cuál es la función del anillo secundario?",
+                options: [
+                    "Sustituir los switches",
+                    "Aumentar la longitud del bus",
+                    "Utilizarse si falla el anillo primario",
+                    "Impedir que las estaciones reciban información"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿En qué dirección viajan las señales en un anillo?",
+                options: [
+                    "En cualquier dirección",
+                    "En la misma dirección, recorriendo las estaciones hasta el destino",
+                    "Solo desde un switch central",
+                    "Directamente al destino sin pasar por otras estaciones"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Qué función cumple cada estación respecto a la señal en una topología en anillo?",
+                options: [
+                    "Aumenta los switches",
+                    "Regenera la señal y evita su degradación",
+                    "Convierte el anillo en estrella",
+                    "Impide que la información llegue al destino"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es una ventaja de la topología en anillo?",
+                options: [
+                    "Permite implementarla en fibra óptica por la transmisión unidireccional",
+                    "No necesita conexiones entre estaciones",
+                    "Elimina cualquier posibilidad de fallo",
+                    "Siempre es la topología más barata"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Qué sucede si falla un anillo simple?",
+                options: [
+                    "Solo se desconecta una estación",
+                    "Funciona mediante un switch secundario",
+                    "Toda la red deja de funcionar",
+                    "La información cambia a un bus"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Por qué dejaron de usarse los anillos de cobre en redes locales?",
+                options: [
+                    "No permiten conectar estaciones adyacentes",
+                    "Sus tasas de transmisión son muy bajas",
+                    "No regeneran la señal",
+                    "Necesitan demasiados switches"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿En qué redes se utiliza actualmente el anillo según el texto?",
+                options: [
+                    "LAN inalámbricas",
+                    "Redes MAN de fibra óptica, como SONET/SDH",
+                    "Redes domésticas de cobre",
+                    "Redes en bus de corta distancia"
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Cómo se forma la topología en árbol?",
+                options: [
+                    "Añadiendo switches secundarios al switch principal",
+                    "Se usa exclusivamente un anillo doble",
+                    "Cada nodo se conecta con todos los demás",
+                    "Con un cable troncal compartido entre varias máquinas"
+                ],
+                correct: 0
+            },
+            {
+                question: "¿Qué permite añadir switches secundarios al switch principal?",
+                options: [
+                    "Impedir la organización por grupos",
+                    "Reducir las estaciones",
+                    "Aumentar las estaciones y establecer una jerarquía",
+                    "Eliminar los enlaces"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Cómo se clasifican las estaciones en una topología en árbol?",
+                options: [
+                    "Por la longitud de sus nombres",
+                    "Por el orden de encendido",
+                    "Según el conmutador al que están conectadas",
+                    "Por el color de los cables"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Qué característica suele tener el switch principal respecto a los secundarios?",
+                options: [
+                    "Solo conecta una estación",
+                    "Tiene menos capacidad obligatoriamente",
+                    "Tiene mejores prestaciones",
+                    "No puede conectar otros switches"
+                ],
+                correct: 2
+            },
+            {
+                question: "¿Qué permite la jerarquía de una topología en árbol?",
+                options: [
+                    "Convertir los enlaces en un único cable",
+                    "Eliminar la organización",
+                    "Impedir nuevas conexiones",
+                    "Priorizar equipos como servidores frente a estaciones de trabajo"
+                ],
+                correct: 3
+            }
+        ];
+
+        // Variables de estado del juego
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswersCount = 0;
+        let canAnswer = true;
+
+        // Elementos del DOM
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        const questionText = document.getElementById('question-text');
+        const currentQuestionNum = document.getElementById('current-question-num');
+        const totalQuestionsNum = document.getElementById('total-questions-num');
+        const scoreDisplay = document.getElementById('score-display');
+
+        // Iniciar Cuestionario
+        function startQuiz() {
+            startScreen.classList.remove('active');
+            resultScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswersCount = 0;
+            scoreDisplay.textContent = score;
+            totalQuestionsNum.textContent = questions.length;
+
+            loadQuestion();
+        }
+
+        // Cargar datos de la pregunta actual
+        function loadQuestion() {
+            canAnswer = true;
+            const q = questions[currentQuestionIndex];
+
+            currentQuestionNum.textContent = currentQuestionIndex + 1;
+            questionText.textContent = q.question;
+
+            // Restablecer estilos de botones
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`btn-${i}`);
+                const textSpan = document.getElementById(`opt-${i}-text`);
+                textSpan.textContent = q.options[i];
+                
+                btn.style.opacity = "1";
+                btn.style.transform = "none";
+            }
+        }
+
+        // Selección de Respuesta
+        function selectOption(index) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const q = questions[currentQuestionIndex];
+            const selectedBtn = document.getElementById(`btn-${index}`);
+
+            if (index === q.correct) {
+                score += 100;
+                correctAnswersCount++;
+                scoreDisplay.textContent = score;
+                selectedBtn.style.transform = "scale(1.03)";
+            } else {
+                selectedBtn.style.opacity = "0.4";
+            }
+
+            const correctBtn = document.getElementById(`btn-${q.correct}`);
+            correctBtn.style.transform = "scale(1.05)";
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1200);
+        }
+
+        // Mostrar Pantalla Final de Resultados
+        function showResults() {
+            quizScreen.classList.remove('active');
+            resultScreen.classList.add('active');
+
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('correct-answers-count').textContent = correctAnswersCount;
+            document.getElementById('total-questions-count').textContent = questions.length;
+        }
+
+        // Reiniciar Cuestionario
+        function restartQuiz() {
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
